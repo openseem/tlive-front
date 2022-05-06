@@ -1,32 +1,23 @@
 <template>
   <el-container id="schedule">
-    <el-aside width="400px">
+    <el-aside width="400px" class="aside">
+      <h3>课程列表</h3>
       <el-table
         :data="inCourse"
         border
-        style="width: 75%; margin: 21px; padding: 0px"
+        style="width: 90%; margin: 21px; padding: 0px"
         @cell-mouse-enter="onHover"
       >
         <el-table-column prop="course" label="课程" width="200" />
-        <el-table-column label="Actions">
-          <template v-slot:default="table">
-            <!-- <router-link
-              :to="{
-                name: 'liveroom',
-                params: { course: inCourse[table.row._id].course },
-              }"
-              tag="span"
-            > -->
-            <el-button type="text" size="mini" @click="togo(table.row._id)">
-              进入
-              <i class="el-icon-edit" />
-            </el-button>
-            <!-- </router-link> -->
+        <el-table-column prop="action" label="操作">
+          <template #default="scope">
+            <el-button size="small" type="primary" @click="goto(scope.$index)">进入</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-aside>
-    <el-main>
+    <el-main class="main">
+      <h3>课程表</h3>
       <el-table :data="tableDatas" border style="width: 100%">
         <el-table-column prop="d" label="时间" />
         <el-table-column prop="d1" label="星期一" />
@@ -155,6 +146,7 @@ export default {
         {
           course: "1",
           courseId: "1",
+          action: "进入",
         },
       ],
     };
@@ -188,6 +180,7 @@ export default {
             let tmp = {
               course: tcourse.courseName,
               courseId: tcourse.course,
+              action: "进入",
             };
             cc = [...cc, tmp];
           });
@@ -195,9 +188,12 @@ export default {
         });
       //   console.log(this.inCourse);
     },
-    togo(courseId) {
-      console.log(courseId);
-      this.$router.push({ name: "liveroom", params: { course: courseId } });
+    goto(index) {
+      console.log(index);
+      this.$router.push({
+        name: "liveroom",
+        params: { course: this.inCourse[index].courseId },
+      });
     },
   },
   setup: function () {
@@ -221,5 +217,28 @@ export default {
   width: 100%;
   background-size: cover;
   position: fixed;
+}
+
+.aside {
+  border-radius: 15px;
+  background-clip: padding-box;
+  margin: 20px;
+  /* width: 350px; */
+  padding: 35px 35px 15px 35px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 10px #cac6c6;
+}
+
+.main {
+  border-radius: 15px;
+  background-clip: padding-box;
+  margin: 10% 10% 40% 10%;
+  /* width: 350px; */
+  height: 800px;
+  padding: 35px 35px 0px 35px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 10px #cac6c6;
 }
 </style>

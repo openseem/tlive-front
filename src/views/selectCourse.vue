@@ -1,74 +1,116 @@
 <template>
   <div id="selectCourse">
-    <el-form :model="user" label-width="0" class="login-form">
+    <div label-width="0" class="login-form">
       <h3>选课</h3>
-      <el-form-item>
-        <el-input type="text" v-model="user.username" placeholder="用户名" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-input type="password" v-model="user.password" placeholder="密码" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm" class="login-button">选课</el-button>
-      </el-form-item>
-      <el-alert id="error" title="帐号或密码错误" type="error" v-if="wrong" @close="wrong = false" />
-      <el-alert id="success" title="选课成功" type="success" v-if="success" @close="success = false" />
-    </el-form>
+      <el-table
+        :data="courseList"
+        border
+        style="width: 90%; margin: 21px; padding: 0px"
+      >
+        <el-table-column prop="courseName" label="课程" width="200" />
+        <el-table-column prop="teacherName" label="老师" width="200" />
+        <el-table-column prop="action" label="操作">
+          <template #default="scope">
+            <el-button size="small" type="primary" @click="goto(scope.$index)"
+              >加入</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-alert
+        id="success"
+        title="注册成功"
+        type="success"
+        v-if="success"
+        @close="success = false"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import { useStore } from 'vuex'
+import { useStore } from "vuex";
 export default {
-  name: "Login",
+  name: "selectCourse",
   components: {},
   data() {
     return {
-      user: {
-        userId: '',
-        username: '',
-        role: '',
-        password: '',
-        tname: ''
-      },
-      wrong: false,
+      courseList: [
+        {
+          courseId: 0,
+          courseName: "",
+          teacherId: 0,
+          teacherName: "",
+          action: "加入",
+        },
+      ],
       success: false,
-    }
+    };
   },
   setup: function () {
     const store = new useStore();
     return {
-      store
-    }
+      store,
+    };
+  },
+  mounted() {
+    this.getNotCourse();
+    console.log(this.courseList);
   },
   methods: {
-    submitForm() {
-      this.axios.post('http://localhost:8765/v1/login/user', {
-        username: this.user.username,
-        password: this.user.password
-      }, {
-        headers: {
-          "Content-Type": "application/json",
-        }
-      }).then(
-        Response => {
-          if (Response.data.stat == 'ok') {
-            this.user.userId = Response.data.userId
-            this.user.username = Response.data.username
-            this.user.role = Response.data.role
-            this.user.tname = Response.data.name
-
-            this.store.commit('login', this.user)
-
-            this.success = true
-          } else {
-            this.wrong = true
+    getNotCourse() {
+      this.axios
+        .get(
+          "http://localhost:8765/v1/course/getNotCourse?userId=" +
+            this.store.state.user.userId
+        )
+        .then((Response) => {
+          let courses = Response.data;
+          console.log(courses);
+          let cc = [];
+          courses.map((course) => {
+            let tmp = {
+              courseId: course.course,
+              courseName: course.courseName,
+              teacherId: course.teacher,
+              teacherName: course.teacherName,
+              action: "加入",
+            };
+            cc = [...cc, tmp];
+          });
+          this.courseList = cc;
+        });
+    },
+    goto(index) {
+      let courseIds = this.courseList[index].courseId;
+      this.axios
+        .post(
+          "http://localhost:8765/v1/course/add",
+          {
+            userId: this.store.state.user.userId,
+            courseId: courseIds,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        }
-      )
-    }
-  }
-}
+        )
+        .then((Response) => {
+          if (Response.data.stat == "ok") {
+            this.success = true;
+            let cc = [];
+            this.courseList.map((course) => {
+              if (!(course.courseId == courseIds)) {
+                cc = [...cc, course];
+              }
+            });
+            this.courseList = cc;
+          }
+        });
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -83,8 +125,8 @@ export default {
 .login-form {
   border-radius: 15px;
   background-clip: padding-box;
-  margin: 15% auto;
-  width: 350px;
+  margin: 5% auto;
+  width: 600px;
   padding: 35px 35px 15px 35px;
   background: #fff;
   border: 1px solid #eaeaea;

@@ -28,7 +28,6 @@
             <el-alert id="error2" title="用户名重复" type="error" v-if="wrong2" @close="wrong2 = false" />
             <el-alert id="error3" title="用户名过长" type="error" v-if="wrong3" @close="wrong3 = false" />
             <el-alert id="error5" title="两次输入不相同" type="error" v-if="wrong5" @close="wrong5 = false" />
-
         </el-form>
     </div>
 </template>
