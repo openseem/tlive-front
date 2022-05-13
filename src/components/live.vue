@@ -13,8 +13,8 @@ export default {
   },
   mounted() {
     let hls = new Hls();
-    // hls.loadSource("http://127.0.0.1:8088/" + this.courseId + ".m3u8")
-    hls.loadSource("http://www.streambox.fr/playlists/test_001/stream.m3u8");
+    hls.loadSource("http://127.0.0.1:8088/" + this.courseId + ".m3u8")
+    // hls.loadSource("http://www.streambox.fr/playlists/test_001/stream.m3u8");
     hls.attachMedia(this.$refs.video);
   },
   computed: {},

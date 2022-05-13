@@ -155,7 +155,7 @@ export default {
     getList() {
       this.axios
         .get(
-          "http://127.0.0.1:8765/v1/course/getSchedule?userId=" +
+          "http://127.0.0.1:8765/v1/schedule/getSchedule?userId=" +
             this.store.state.user.userId
         )
         .then((Response) => {

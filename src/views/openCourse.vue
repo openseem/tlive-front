@@ -160,7 +160,7 @@ export default {
                     this.course.courseId = res.data.course
                     console.log(this.schedules)
                     this.schedules.map((schedule) => {
-                        this.axios.post("http://localhost:8765/v1/course/schedule", {
+                        this.axios.post("http://localhost:8765/v1/schedule/add", {
                             courseId: this.course.courseId,
                             level: schedule.level,
                             day: schedule.day

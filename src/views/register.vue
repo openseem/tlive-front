@@ -1,7 +1,7 @@
 <template>
     <div id="Register">
         <el-form :model="user" label-width="0" class="register-form">
-            <h3>登录</h3>
+            <h3>注册</h3>
             <el-form-item>
                 <el-input type="text" v-model="user.userName" placeholder="用户名" auto-complete="off"></el-input>
             </el-form-item>
