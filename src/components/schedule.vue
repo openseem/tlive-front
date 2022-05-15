@@ -2,12 +2,7 @@
   <el-container id="schedule">
     <el-aside width="400px" class="aside">
       <h3>课程列表</h3>
-      <el-table
-        :data="inCourse"
-        border
-        style="width: 90%; margin: 21px; padding: 0px"
-        @cell-mouse-enter="onHover"
-      >
+      <el-table :data="inCourse" border style="width: 90%; margin: 21px; padding: 0px" @cell-mouse-enter="onHover">
         <el-table-column prop="course" label="课程" width="200" />
         <el-table-column prop="action" label="操作">
           <template #default="scope">
@@ -156,7 +151,7 @@ export default {
       this.axios
         .get(
           "http://127.0.0.1:8765/v1/schedule/getSchedule?userId=" +
-            this.store.state.user.userId
+          this.store.state.user.userId
         )
         .then((Response) => {
           let schedules = Response.data;
@@ -170,7 +165,7 @@ export default {
       this.axios
         .get(
           "http://127.0.0.1:8765/v1/course/getCourse?userId=" +
-            this.store.state.user.userId
+          this.store.state.user.userId
         )
         .then((Response) => {
           let courses = Response.data;
@@ -190,10 +185,7 @@ export default {
     },
     goto(index) {
       console.log(index);
-      this.$router.push({
-        name: "liveroom",
-        params: { course: this.inCourse[index].courseId },
-      });
+      this.$router.push("/course/" + this.inCourse[index].courseId);
     },
   },
   setup: function () {

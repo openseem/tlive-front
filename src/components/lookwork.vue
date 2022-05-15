@@ -5,7 +5,7 @@
                 question.index
         }}题：{{ question.question }} (分值：{{ question.score }})</h4>
         <el-form-item>
-            <el-radio-group style="display:block;" v-model="question.ans">
+            <el-radio-group style="display:block;" v-model="question.answer" disabled="true">
                 <div>
                     <el-radio label="A">
                         {{ question.optionA }}
@@ -28,10 +28,13 @@
                 </div>
             </el-radio-group>
         </el-form-item>
+        <el-form-item>
+            您的答案：{{ question.ans }}
+        </el-form-item>
     </el-form>
     <el-form>
         <el-form-item label-width="120px">
-            <el-button type="primary" @click="onSubmit">提交作业</el-button>
+            <el-button type="primary" @click="onSubmit">返回</el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -40,7 +43,7 @@
 import { useStore } from "vuex";
 
 export default {
-    name: "dowork",
+    name: "lookwork",
     components: {
     },
     data() {
@@ -58,14 +61,10 @@ export default {
                     answer: ''
                 }
             ],
-            answers: [
-                {
-                    index: 0,
-                    answer: 'A'
-                }
-            ],
             userId: this.store.state.user.userId,
             workId: this.$route.params.workId,
+            score: 0,
+            ans: ''
         }
     },
     setup: function () {
@@ -75,14 +74,6 @@ export default {
         };
     },
     methods: {
-        onSubmit() {
-            this.axios.post("http://127.0.0.1:8765/v1/work/completeWork", {
-                questionInfos: this.questions,
-                userId: this.userId,
-                workId: this.workId
-            })
-            this.$router.go(-1)
-        },
         getwork() {
             this.questions = [];
             this.answers = [];
@@ -92,6 +83,23 @@ export default {
                     console.log(d);
                     let i = 1
                     d.map(question => {
+                        let a = ""
+                        switch (question.answer) {
+                            case 1:
+                                a = "A"
+                                break;
+                            case 2:
+                                a = "B"
+                                break;
+                            case 3:
+                                a = "C"
+                                break;
+                            case 4:
+                                a = "D"
+                                break;
+                            default:
+                                break;
+                        }
                         let tmp = {
                             index: i,
                             id: question.id,
@@ -101,7 +109,8 @@ export default {
                             optionC: question.optionC,
                             optionD: question.optionD,
                             score: question.score,
-                            ans: ''
+                            answer: a,
+                            ans: this.ans.charAt(i - 1)
                         }
                         let t = {
                             index: i++,
@@ -114,24 +123,27 @@ export default {
                 }
             )
             console.log(this.questions)
+        },
+        getWorkStat() {
+            this.axios.get("http://127.0.0.1:8765/v1/work/getWorkStat?workId=" + this.workId + "&userId=" + this.userId).then(
+                res => {
+                    let c = res.data
+                    console.log(c);
+                    this.ans = c.ans
+                    this.score = c.score
+                    this.getwork()
+                }
+            )
+        },
+        onSubmit() {
+            this.$router.go(-1)
         }
     },
     mounted() {
-        this.getwork()
+        this.getWorkStat()
     }
 };
 </script>
 
 <style scoped>
-.login-form {
-    border-radius: 15px;
-    background-clip: padding-box;
-    margin: 80px;
-    width: 80%;
-    /* height: 800px; */
-    padding: 35px 35px 15px 35px;
-    background: #fff;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
-}
 </style>

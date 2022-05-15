@@ -24,4 +24,8 @@ body {
   height: 100%;
   margin: 0;
 }
+
+.el-table .cell {
+  white-space: pre-line !important;
+}
 </style>

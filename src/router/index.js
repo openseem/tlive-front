@@ -14,6 +14,10 @@ import upload from "../components/upload.vue"
 import seework from "../components/seework.vue"
 import dowork from "../components/dowork.vue"
 import postwork from "../components/postwork.vue"
+import lookwork from "../components/lookwork.vue"
+import workstatic from "../components/workstatic.vue"
+import workstudent from "../components/workstudent.vue"
+import studentscore from "../components/studentscore.vue"
 
 const router = createRouter({
   history: createWebHistory(
@@ -71,12 +75,28 @@ const router = createRouter({
         component: postwork
       },
       {
-        path: 'dowork',
+        path: 'dowork/:workId',
         component: dowork
       },
       {
         path: 'seework',
         component: seework
+      },
+      {
+        path: 'lookwork/:workId',
+        component: lookwork
+      },
+      {
+        path: 'workstatic',
+        component: workstatic
+      },
+      {
+        path: 'workstudent',
+        component: workstudent
+      },
+      {
+        path: 'studentscore',
+        component: studentscore
       }
     ]
   },
